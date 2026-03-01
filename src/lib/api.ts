@@ -3,7 +3,7 @@ import ky from 'ky';
 export const api = ky.create({
 
     prefixUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
-    // Tiempo máximo de espera para la respuesta
+    // Tiempo máximo de espera para la respuesta en ms
     timeout: 10000,
 
     // Configuraciones comunes
@@ -15,7 +15,7 @@ export const api = ky.create({
     hooks: {
         beforeRequest: [
             request => {
-                // Útil para debug: verás en la consola del navegador cada petición
+                // Útil para debug
                 console.log(`Enviando petición a: ${request.url}`);
             }
         ],
