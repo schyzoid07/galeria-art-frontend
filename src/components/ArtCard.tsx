@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Art } from '@/types/art';
+import Link from 'next/link';
 
 export default function ArtCard({ art }: { art: Art }) {
     // 1. Protección: Si por alguna razón no llega la obra, no renderizamos nada
@@ -35,7 +36,12 @@ export default function ArtCard({ art }: { art: Art }) {
                     {art.nombre || 'Sin título'}
                 </h3>
                 <p className="text-sm text-gray-500 mb-4">
-                    por <span className="font-medium text-blue-600">{art.artista?.nombre || 'Autor Desconocido'}</span>
+                    por <Link
+                        href={`/artista/${art.artista.id}`}
+                        className="font-medium text-blue-600 hover:underline hover:text-blue-800 transition-colors"
+                    >
+                        {art.artista?.nombre || 'Autor Desconocido'}
+                    </Link>
                 </p>
 
                 {/* EMPUJAR EL CONTENIDO HACIA ABAJO */}
