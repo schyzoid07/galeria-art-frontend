@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
-    const [user, setUser] = useState<{ fullName: string } | null>(null);
+    const [user, setUser] = useState<{ nombre: string } | null>(null);
     const router = useRouter();
 
     // Este efecto se ejecuta al cargar la página y detecta al usuario
@@ -45,7 +45,7 @@ export default function Navbar() {
                         // VISTA CUANDO EL USUARIO ESTÁ LOGUEADO
                         <div className="flex items-center gap-6">
                             <span className="text-sm font-medium text-stone-400">
-                                Hola, <span className="text-slate-900 font-bold">{user.fullName.split(' ')[0]}</span>
+                                Hola, <span className="text-slate-900 font-bold">{user?.nombre ? user.nombre.split(' ')[0] : "Usuario"}</span>
                             </span>
                             <button
                                 onClick={handleLogout}

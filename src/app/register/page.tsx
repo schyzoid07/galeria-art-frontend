@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function RegisterPage() {
     const router = useRouter();
     const [formData, setFormData] = useState({
-        fullName: '',
+        nombre: '',
         email: '',
         password: ''
     });
@@ -46,7 +46,7 @@ export default function RegisterPage() {
                             type="text"
                             className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
                             placeholder="Ej. Miguel Ángel"
-                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                         />
                     </div>
 

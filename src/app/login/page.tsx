@@ -7,56 +7,52 @@ import Link from 'next/link';
 
 export default function LoginPage() {
     const router = useRouter();
-    const [email, setEmail] = useState('');
+    // Usamos 'login' para que coincida con tu LoginRequest de Java
+    const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
 
     const mutation = useMutation({
-        mutationFn: async (credentials: any) => {
-            // Nota: Aquí llamamos a un endpoint de login que deberías tener en tu BuyerController
-            // Si no lo tienes, podemos usar el de búsqueda por email para simularlo por ahora.
-            return api.post('api/buyers/login', { json: credentials }).json();
-        },
+        mutationFn: (credentials: any) =>
+            api.post('api/buyers/login', { json: credentials }).json(),
         onSuccess: (user: any) => {
-            // 1. Guardamos el objeto completo del usuario en el navegador
+            console.log("Datos recibidos del back:", user);
+            // Guardamos el objeto Buyer que devuelve tu .map(ResponseEntity::ok)
             localStorage.setItem('user', JSON.stringify(user));
 
-            // 2. Avisamos al usuario
-            alert(`¡Bienvenido de nuevo, ${user.fullName}!`);
+            alert(`¡Bienvenido, ${user.nombre}!`);
 
-            // 3. Redirigimos al catálogo
             router.push('/');
-
-            // 4. Forzamos un refresco para que el Navbar lea el localStorage nuevo
             router.refresh();
         },
-        onError: () => {
-            alert('Credenciales incorrectas. Intenta de nuevo.');
+        onError: (error: any) => {
+            alert('Usuario o contraseña incorrectos');
         }
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        mutation.mutate({ email, password });
+        // Enviamos 'login' y 'password' exactamente como espera tu @RequestBody LoginRequest
+        mutation.mutate({ login, password });
     };
 
     return (
         <div className="min-h-screen bg-stone-50 flex items-center justify-center p-6">
             <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-stone-100">
                 <div className="text-center mb-10">
-                    <h2 className="text-3xl font-serif font-bold text-slate-950">Iniciar Sesión</h2>
-                    <p className="text-stone-500 mt-2">Accede a tu colección privada</p>
+                    <h2 className="text-3xl font-serif font-bold text-slate-950 text-center">MUSEO<span className="text-stone-400">.</span></h2>
+                    <p className="text-stone-500 mt-2">Ingresa tus credenciales</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Email</label>
+                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Usuario / Email</label>
                         <input
                             required
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            type="text"
+                            value={login}
+                            onChange={(e) => setLogin(e.target.value)}
                             className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
-                            placeholder="correo@ejemplo.com"
+                            placeholder="Tu usuario"
                         />
                     </div>
 
@@ -77,14 +73,14 @@ export default function LoginPage() {
                         disabled={mutation.isPending}
                         className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-95 disabled:bg-stone-300"
                     >
-                        {mutation.isPending ? 'Validando...' : 'Entrar'}
+                        {mutation.isPending ? 'Verificando...' : 'Iniciar Sesión'}
                     </button>
                 </form>
 
                 <p className="text-center mt-8 text-sm text-stone-500">
                     ¿No tienes cuenta?{' '}
                     <Link href="/registro" className="text-slate-900 font-bold hover:underline">
-                        Regístrate aquí
+                        Regístrate
                     </Link>
                 </p>
             </div>
