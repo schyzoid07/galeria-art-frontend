@@ -2,20 +2,20 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Buyer } from '@/types/art'; // Importamos el tipo
 
 export default function Navbar() {
-    const [user, setUser] = useState<{ nombre: string } | null>(null);
+    const [user, setUser] = useState<Buyer | null>(null);
     const router = useRouter();
 
-    // Este efecto se ejecuta al cargar la página y detecta al usuario
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             try {
                 setUser(JSON.parse(storedUser));
             } catch (error) {
-                console.error("Error parseando usuario", error);
                 localStorage.removeItem('user');
+                console.log(error)
             }
         }
     }, []);
@@ -24,46 +24,48 @@ export default function Navbar() {
         localStorage.removeItem('user');
         setUser(null);
         router.push('/');
-        router.refresh(); // Refresca para limpiar estados
+        router.refresh();
     };
 
     return (
         <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-stone-100">
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                {/* LOGO */}
                 <Link href="/" className="text-2xl font-serif font-black tracking-tighter text-slate-900">
                     MUSEO<span className="text-stone-400">.</span>
                 </Link>
 
-                {/* LINKS DINÁMICOS */}
                 <div className="flex items-center gap-8">
                     <Link href="/" className="text-sm font-bold text-stone-600 hover:text-slate-950 transition-colors">
                         Galería
                     </Link>
 
                     {user ? (
-                        // VISTA CUANDO EL USUARIO ESTÁ LOGUEADO
                         <div className="flex items-center gap-6">
-                            <span className="text-sm font-medium text-stone-400">
-                                Hola, <span className="text-slate-900 font-bold">{user?.nombre ? user.nombre.split(' ')[0] : "Usuario"}</span>
-                            </span>
+                            {/* NUEVOS LINKS PARA EL COMPRADOR */}
+                            <Link href="/profile/purchases" className="text-sm font-bold text-stone-600 hover:text-slate-950 transition-colors">
+                                Mis Obras
+                            </Link>
+
+                            <Link href="/profile" className="flex items-center gap-2 group">
+                                <div className="w-20 h-8 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-bold text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-all">
+                                    {user.nombre + ''}
+                                </div>
+                                <span className="text-sm font-bold text-slate-900 uppercase tracking-tighter">Perfil</span>
+                            </Link>
+
                             <button
                                 onClick={handleLogout}
-                                className="bg-stone-100 text-stone-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-stone-200 transition-all"
+                                className="bg-stone-50 text-stone-400 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-red-50 hover:text-red-500 transition-all"
                             >
-                                Cerrar Sesión
+                                Salir
                             </button>
                         </div>
                     ) : (
-                        // VISTA CUANDO NO HAY USUARIO
                         <div className="flex items-center gap-4">
                             <Link href="/login" className="text-sm font-bold text-stone-600 hover:text-slate-950 transition-colors">
                                 Ingresar
                             </Link>
-                            <Link
-                                href="/registro"
-                                className="bg-slate-900 text-white px-6 py-2.5 rounded-full text-xs font-bold hover:shadow-lg active:scale-95 transition-all"
-                            >
+                            <Link href="/register" className="bg-slate-900 text-white px-6 py-2.5 rounded-full text-xs font-bold hover:shadow-lg transition-all">
                                 Unirse
                             </Link>
                         </div>

@@ -61,17 +61,15 @@ export default function ArtCard({ art }: { art: Art }) {
                         </span>
                     </div>
 
-                    {/* BOTÓN DE COMPRA */}
-                    <button
-                        onClick={() => alert('Próximamente: Regístrate para completar la compra de: ' + art.nombre)}
-                        disabled={art.estatus !== 'Disponible'}
-                        className={`w-full py-3 rounded-xl font-bold transition-all text-sm ${art.estatus === 'Disponible'
-                            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-100 active:scale-95'
-                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            }`}
-                    >
-                        {art.estatus === 'Disponible' ? 'Comprar ahora' : 'No disponible'}
-                    </button>
+                    <div className='flex-gap-3'>
+
+                        <Link href={`/art/${art.id}`}>
+                            <button className="w-full py-3 rounded-xl border-2 border-slate-900 text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all active:scale-95 text-sm uppercase tracking-wider">
+                                Ver Obra
+                            </button>
+                        </Link>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -19,7 +19,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} antialiased`}>
         <QueryProvider>
           <Navbar />
-          {children}
+          <main className="pt-20">
+            {children}
+          </main>
         </QueryProvider>
       </body>
     </html>

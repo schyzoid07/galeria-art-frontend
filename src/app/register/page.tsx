@@ -8,8 +8,12 @@ export default function RegisterPage() {
     const router = useRouter();
     const [formData, setFormData] = useState({
         nombre: '',
+        apellido: '',
         email: '',
-        password: ''
+        password: '',
+        login: '', //
+        telefono: '', //
+        activo: true,
     });
 
     const mutation = useMutation({
@@ -35,18 +39,29 @@ export default function RegisterPage() {
             <div className="max-w-md w-full bg-white rounded-3xl shadow-sm border border-stone-200 p-10">
                 <div className="mb-8">
                     <h1 className="text-3xl font-serif font-bold text-slate-950">Únete a la Galería</h1>
-                    <p className="text-stone-500 mt-2">Crea tu perfil de coleccionista.</p>
+                    <p className="text-stone-500 mt-2">Crea tu perfil de coleccionista</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Nombre Completo</label>
+                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Nombre</label>
                         <input
                             required
                             type="text"
                             className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
                             placeholder="Ej. Miguel Ángel"
                             onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Apellido</label>
+                        <input
+                            required
+                            type="text"
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            placeholder="Ej. Miguel Ángel"
+                            onChange={(e) => setFormData({ ...formData, apellido: e.target.value })}
                         />
                     </div>
 
@@ -69,6 +84,28 @@ export default function RegisterPage() {
                             className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
                             placeholder="••••••••"
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">usuario</label>
+                        <input
+                            type="text"
+                            required
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            placeholder="tunombre123"
+                            onChange={(e) => setFormData({ ...formData, login: e.target.value })}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">telefono</label>
+                        <input
+                            type="tel"
+                            required
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            placeholder="04267435641"
+                            onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
                         />
                     </div>
 
