@@ -2,10 +2,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Buyer } from '@/types/art'; // Importamos el tipo
+import { User } from '@/types/art'; // Importamos el tipo
 
 export default function Navbar() {
-    const [user, setUser] = useState<Buyer | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -17,6 +17,13 @@ export default function Navbar() {
                 localStorage.removeItem('user');
                 console.log(error)
             }
+        }
+    }, []);
+
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+        if (storedUser.login !== 'admin') {
+            router.push('/'); // Si no es admin, lo expulsamos a la home
         }
     }, []);
 
@@ -69,6 +76,15 @@ export default function Navbar() {
                             </Link>
                         </div>
                     )}
+
+
+                    { //logica para entender si el user es admin o buyer
+                        user?.login === 'admin' &&
+                        <Link href="/admin/buyers" className="text-sm font-bold text-red-600 hover:text-red-800 transition-colors">
+                            Panel Admin
+                        </Link>
+
+                    }
                 </div>
             </div>
         </nav>
