@@ -57,7 +57,8 @@ export interface User {
     nombre: string;
     apellido: string;
     email: string;
-    telefono: string; // Opcional si puede ser null en DB
+    contraseña: string;
+    telefono: string;
     fechaRegistro: string; // LocalDateTime se serializa como ISO string
     activo: boolean;
 }

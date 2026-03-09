@@ -41,16 +41,15 @@ export default function Navbar() {
 
                     {user ? (
                         <div className="flex items-center gap-6">
-                            {/* NUEVOS LINKS PARA EL COMPRADOR */}
                             <Link href="/profile/purchases" className="text-sm font-bold text-stone-600 hover:text-slate-950 transition-colors">
                                 Mis Obras
                             </Link>
 
                             <Link href="/profile" className="flex items-center gap-2 group">
                                 <div className="w-20 h-8 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-bold text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-all">
-                                    {user.nombre + ''}
+                                    {user.nombre.toUpperCase()}
                                 </div>
-                                <span className="text-sm font-bold text-slate-900 uppercase tracking-tighter">Perfil</span>
+
                             </Link>
 
                             <button
