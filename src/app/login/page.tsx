@@ -13,7 +13,7 @@ export default function LoginPage() {
 
     const mutation = useMutation({
         mutationFn: (credentials: any) =>
-            api.post('api/buyers/login', { json: credentials }).json(),
+            api.post('api/auth/login', { json: credentials }).json(),
         onSuccess: (user: any) => {
             console.log("Datos recibidos del back:", user);
             // Guardamos el objeto Buyer que devuelve tu .map(ResponseEntity::ok)
@@ -45,13 +45,13 @@ export default function LoginPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Usuario / Email</label>
+                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Usuario</label>
                         <input
                             required
                             type="text"
                             value={login}
                             onChange={(e) => setLogin(e.target.value)}
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             placeholder="Tu usuario"
                         />
                     </div>
@@ -63,7 +63,7 @@ export default function LoginPage() {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             placeholder="••••••••"
                         />
                     </div>
