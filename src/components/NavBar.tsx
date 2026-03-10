@@ -1,37 +1,42 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { User } from '@/types/art'; // Importamos el tipo
+import { useRouter, usePathname } from 'next/navigation';
+import { User } from '@/types/art';
 
 export default function Navbar() {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const pathname = usePathname();
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
+        const data = localStorage.getItem('user');
+        if (data) {
             try {
-                setUser(JSON.parse(storedUser));
+                const parsed = JSON.parse(data);
+                setUser(parsed.user || parsed);
             } catch (error) {
                 localStorage.removeItem('user');
                 console.log(error)
             }
         }
+        setLoading(false);
     }, []);
 
+    // Proteccion de rutas admin
     useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-        if (storedUser.login !== 'admin') {
-            router.push('/'); // Si no es admin, lo expulsamos a la home
+        if (!loading && pathname?.startsWith('/admin')) {
+            if (!user || !user.cargo) {
+                router.push('/');
+            }
         }
-    }, []);
+    }, [user, pathname, loading, router]);
 
     const handleLogout = () => {
         localStorage.removeItem('user');
         setUser(null);
         router.push('/');
-        router.refresh();
     };
 
     return (
@@ -48,15 +53,25 @@ export default function Navbar() {
 
                     {user ? (
                         <div className="flex items-center gap-6">
-                            <Link href="/profile/purchases" className="text-sm font-bold text-stone-600 hover:text-slate-950 transition-colors">
-                                Mis Obras
-                            </Link>
+
+                            {/* Panel Admin: Solo para Admins */}
+                            {user.cargo && (
+                                <Link href="/admin/buyers" className="text-sm font-bold text-stone-600 hover:text-slate-950 transition-colors">
+                                    Panel Admin
+                                </Link>
+                            )}
+
+                            {/* Mis Obras: Solo para Buyers (cuando no es admin) */}
+                            {!user.cargo && (
+                                <Link href="/profile/purchases" className="text-sm font-bold text-stone-600 hover:text-slate-950 transition-colors">
+                                    Mis Obras
+                                </Link>
+                            )}
 
                             <Link href="/profile" className="flex items-center gap-2 group">
                                 <div className="w-20 h-8 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-bold text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-all">
-                                    {user.nombre.toUpperCase()}
+                                    {user.nombre?.toUpperCase() || 'USER'}
                                 </div>
-
                             </Link>
 
                             <button
@@ -76,15 +91,6 @@ export default function Navbar() {
                             </Link>
                         </div>
                     )}
-
-
-                    { //logica para entender si el user es admin o buyer
-                        user?.login === 'admin' &&
-                        <Link href="/admin/buyers" className="text-sm font-bold text-red-600 hover:text-red-800 transition-colors">
-                            Panel Admin
-                        </Link>
-
-                    }
                 </div>
             </div>
         </nav>

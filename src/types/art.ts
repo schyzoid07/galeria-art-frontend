@@ -49,8 +49,6 @@ export interface Art {
     temperaturaCoccion?: number;
 }
 
-// src/types/index.ts
-
 export interface User {
     id: number;
     login: string;
@@ -59,13 +57,19 @@ export interface User {
     email: string;
     contraseña: string;
     telefono: string;
-    fechaRegistro: string; // LocalDateTime se serializa como ISO string
+    fechaRegistro: string;
     activo: boolean;
+    cargo?: string;
 }
 
 export interface Buyer extends User {
     datosTarjetaMask: string;
     membresiaPaga: boolean;
     direccionEnvio: string;
-    codigoSeguridad?: string; // Opcional porque se genera después
+    codigoSeguridad?: string;
+}
+
+export interface AuthResponse {
+    user: User;
+    tipo: 'ADMIN' | 'BUYER';
 }
