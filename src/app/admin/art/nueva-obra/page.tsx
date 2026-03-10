@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
-import { Artista, Genero } from '@/types/art';
+import { Artist, Genre } from '@/types/art';
 
 export default function NuevaObraPage() {
     const router = useRouter();
