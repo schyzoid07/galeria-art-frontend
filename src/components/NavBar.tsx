@@ -54,9 +54,8 @@ export default function Navbar() {
                     {user ? (
                         <div className="flex items-center gap-6">
 
-                            {/* Panel Admin: Solo para Admins */}
                             {user.cargo && (
-                                <Link href="/admin/buyers" className="text-sm font-bold text-stone-600 hover:text-slate-950 transition-colors">
+                                <Link href="/admin/dashboard" className="text-sm font-bold text-stone-600 hover:text-slate-950 transition-colors">
                                     Panel Admin
                                 </Link>
                             )}
