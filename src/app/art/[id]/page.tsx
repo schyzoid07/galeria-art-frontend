@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Art, Buyer } from '@/types/art';
 import { MembershipButton } from '@/components/MembershipButton';
+import { ArtDetailField } from '@/components/ArtDetailField';
 
 export default function ArtDetailPage() {
     const { id } = useParams();
@@ -80,27 +81,20 @@ export default function ArtDetailPage() {
 
                     {/* Especificaciones Dinámicas (Opción 1 que elegiste) */}
                     <div className="grid grid-cols-2 gap-x-12 gap-y-8">
-                        <div>
-                            <span className="text-[10px] font-bold text-stone-400 uppercase tracking-[0.25em] block mb-2">Género</span>
-                            <span className="text-lg text-slate-800 font-light border-l-2 border-stone-200 pl-4 block">{art.genero?.nombre}</span>
-                        </div>
-                        {art.tecnica && (
-                            <div>
-                                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-[0.25em] block mb-2">Técnica</span>
-                                <span className="text-lg text-slate-800 font-light border-l-2 border-stone-200 pl-4 block">{art.tecnica}</span>
-                            </div>
-                        )}
-                        {art.material && (
-                            <div>
-                                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-[0.25em] block mb-2">Material</span>
-                                <span className="text-lg text-slate-800 font-light border-l-2 border-stone-200 pl-4 block">{art.material}</span>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="bg-stone-100 p-8 flex justify-between items-baseline">
-                        <span className="text-xs font-bold text-stone-400 uppercase tracking-[0.3em]">Precio Base</span>
-                        <span className="text-4xl font-serif font-bold text-slate-900">${art.precioBase.toLocaleString('es-ES')}</span>
+                        <ArtDetailField label="Género" value={art.genero?.nombre} />
+                        <ArtDetailField label="Técnica" value={art.tecnica} />
+                        <ArtDetailField label="Estilo" value={art.estilo} />
+                        <ArtDetailField label="Material" value={art.material} />
+                        <ArtDetailField label="Pureza" value={art.purezaMetal} />
+                        <ArtDetailField label="Peso" value={art.peso ? `${art.peso} kg` : undefined} />
+                        <ArtDetailField label="Dimensiones" value={
+                            art.largo && art.ancho ? `${art.largo}x${art.ancho} cm` : undefined
+                        } />
+                        <ArtDetailField label="Impresión" value={art.tipoImpresion} />
+                        <ArtDetailField label="Papel" value={art.papel} />
+                        <ArtDetailField label="Edición" value={art.edicion} />
+                        <ArtDetailField label="Arcilla" value={art.tipoArcilla} />
+                        <ArtDetailField label="Cocción" value={art.temperaturaCoccion ? `${art.temperaturaCoccion}°C` : undefined} />
                     </div>
 
                     {/* Lógica de Botones Condicionales */}
@@ -109,7 +103,13 @@ export default function ArtDetailPage() {
                             <Link href="/login" className="block w-full text-center py-5 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-all">
                                 Autenticarse para comprar
                             </Link>
+                        ) : 'cargo' in user ? (
+                            // Lógica para Admin
+                            <div className="w-full py-5 bg-stone-100 text-stone-600 text-center text-xs font-bold uppercase tracking-[0.2em] border border-stone-200">
+                                Vista de Administrador
+                            </div>
                         ) : !user.membresiaPaga ? (
+                            // Lógica para Buyer sin membresía
                             <MembershipButton
                                 user={user}
                                 onSuccess={(updated) => {
@@ -118,10 +118,12 @@ export default function ArtDetailPage() {
                                 }}
                             />
                         ) : art.estatus !== 'Disponible' ? (
+                            // Lógica para obra no disponible
                             <button disabled className="w-full py-5 bg-stone-200 text-stone-500 text-xs font-bold uppercase tracking-[0.3em] cursor-not-allowed">
                                 Obra ya {art.estatus}
                             </button>
                         ) : (
+                            // Lógica para compra final
                             <button
                                 onClick={() => reserveMutation.mutate()}
                                 disabled={reserveMutation.isPending}
