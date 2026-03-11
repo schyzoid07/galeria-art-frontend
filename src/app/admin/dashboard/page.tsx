@@ -4,7 +4,8 @@ import Link from 'next/link';
 const adminModules = [
     { title: "Gestionar Compradores", path: "/admin/buyers", description: "Ver, editar y eliminar perfiles de clientes.", color: "bg-blue-50 text-blue-700" },
     { title: "Gestionar Administradores", path: "/admin/admins", description: "Control de acceso para el personal administrativo.", color: "bg-red-50 text-red-700" },
-    { title: "Catálogo de Arte", path: "/admin/art", description: "Gestionar obras, precios y disponibilidad.", color: "bg-emerald-50 text-emerald-700" }
+    { title: "Catálogo de Arte", path: "/admin/art", description: "Gestionar obras, precios y disponibilidad.", color: "bg-emerald-50 text-emerald-700" },
+    { title: "Catálogo de Artistas", path: "/admin/artists", description: "Gestionar artistas existentes en el sistema.", color: "bg-purple-50 text-purple-700" }
 
 ];
 
