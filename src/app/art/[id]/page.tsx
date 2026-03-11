@@ -37,17 +37,17 @@ export default function ArtDetailPage() {
     const reserveMutation = useMutation({
         mutationFn: () => {
             const storedUser = localStorage.getItem('user');
-            const user = storedUser ? JSON.parse(storedUser) : null;
-            const buyerId = user?.id;
+            const parsed = storedUser ? JSON.parse(storedUser) : null;
+            const buyerId = parsed?.user?.id || parsed?.id;
+
+            if (!buyerId) throw new Error("No se pudo obtener el ID del comprador");
             return api.patch(`api/arts/${id}/reservar/${buyerId}`).json<Art>()
         },
         onSuccess: (updatedArt) => {
             alert(`¡Éxito! La obra "${updatedArt.nombre}" ha sido reservada.`);
-            // Refrescamos los datos de la obra en la interfaz
             queryClient.invalidateQueries({ queryKey: ['art', id] });
         },
         onError: async (err: any) => {
-            // Intentamos leer el mensaje de error que configuramos en el Backend
             const errorData = await err.response?.json().catch(() => null);
             alert(errorData || 'Error al procesar la reserva. Inténtalo de nuevo.');
         }
