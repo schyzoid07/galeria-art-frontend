@@ -79,10 +79,20 @@ export default function LoginPage() {
 
                 <p className="text-center mt-8 text-sm text-stone-500">
                     ¿No tienes cuenta?{' '}
-                    <Link href="/registro" className="text-slate-900 font-bold hover:underline">
+                    <Link href="/register" className="text-slate-900 font-bold hover:underline">
                         Regístrate
                     </Link>
+
                 </p>
+                <div className="text-center mt-8 text-sm text-stone-500 space-y-2">
+
+                    {/* Nuevo enlace para Admins */}
+                    <div className="pt-4 border-t border-stone-100">
+                        <Link href="/admin/login" className="text-stone-400 hover:text-stone-600 text-xs uppercase tracking-widest font-bold">
+                            ¿Eres administrador? Inicia sesión aquí
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );
