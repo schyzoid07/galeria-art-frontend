@@ -57,7 +57,7 @@ export default function RegisterAdminPage() {
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
                         Gestión de Personal
                     </span>
-                    <h1 className="text-3xl font-serif font-bold text-slate-950 mt-4">Registrar Admin</h1>
+                    <h1 className="text-3xl font-serif font-bold text-slate-950 mt-4">Registro</h1>
                     <p className="text-stone-500 text-sm mt-2">Crea una nueva cuenta con privilegios administrativos.</p>
                 </div>
 

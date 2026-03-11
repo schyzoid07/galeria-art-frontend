@@ -88,8 +88,8 @@ export default function LoginPage() {
 
                     {/* Nuevo enlace para Admins */}
                     <div className="pt-4 border-t border-stone-100">
-                        <Link href="/admin/login" className="text-stone-400 hover:text-stone-600 text-xs uppercase tracking-widest font-bold">
-                            ¿Eres administrador? Inicia sesión aquí
+                        <Link href="/admin/register" className="text-stone-400 hover:text-stone-600 text-xs uppercase tracking-widest font-bold">
+                            ¿Eres administrador? registrate aquí
                         </Link>
                     </div>
                 </div>

@@ -12,8 +12,8 @@ export interface Genre {
 }
 
 
+// Base (Campos comunes que toda Obra tiene)
 export interface Art {
-    // Campos obligatorios (comunes)
     id: number;
     nombre: string;
     precioBase: number;
@@ -22,31 +22,38 @@ export interface Art {
     imagenUrl: string;
     artista: Artist;
     genero: Genre;
+}
 
-    // Campos Opcionales (Especializaciones)
-    // Painting
-    tecnica?: string;
-    estilo?: string;
+// Especializaciones (Extienden a Art y añaden sus campos únicos)
 
-    // Sculpture & Orphebrery
-    material?: string;
-    peso?: number;
-    largo?: number;
-    ancho?: number;
-    profundidad?: number;
+export interface Painting extends Art {
+    tecnica: string;
+    estilo: string;
+}
 
-    // Orphebrery específico
-    purezaMetal?: string;
-    metalBase?: string;
+export interface Sculpture extends Art {
+    material: string;
+    peso: number;
+    largo: number;
+    ancho: number;
+    profundidad: number;
+}
 
-    // Photograph
-    tipoImpresion?: string;
-    papel?: string;
-    edicion?: string;
+export interface Orphebrery extends Art {
+    purezaMetal: string;
+    metalBase: string;
+    peso: number; // Ahora es único para este contexto
+}
 
-    // Ceramic
-    tipoArcilla?: string;
-    temperaturaCoccion?: number;
+export interface Photography extends Art {
+    tipoImpresion: string;
+    papel: string;
+    edicion: string;
+}
+
+export interface Ceramic extends Art {
+    tipoArcilla: string;
+    temperaturaCoccion: number;
 }
 
 //para el paylaod de creacion de obra

@@ -6,23 +6,57 @@ import { useRouter } from 'next/navigation';
 import { Artist, Genre, Art, CreateArtDTO } from '@/types/art';
 import { useSearchParams } from 'next/navigation';
 
+const FormInput = ({ label, value, onChange, type = "text" }: any) => (
+    <div>
+        <label className="block text-xs font-bold text-stone-500 uppercase mb-2">{label}</label>
+        <input
+            type={type}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none"
+        />
+    </div>
+);
+
+
+//Componente principal
 export default function NuevaObraPage() {
     const router = useRouter();
     const queryClient = useQueryClient();
     const searchParams = useSearchParams();
 
+
     const id = searchParams.get('id');
 
     // 1. Estados para el formulario
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        nombre: string;
+        precioBase: number;
+        estatus: 'Disponible' | 'Reservada' | 'Vendida';
+        imagenUrl: string;
+        artistaId: number;
+        generoId: number;
+        tecnica?: string;
+        estilo?: string;
+        material?: string;
+        peso?: number;
+        largo?: number;
+        ancho?: number;
+        profundidad?: number;
+        purezaMetal?: string;
+        metalBase?: string;
+        tipoImpresion?: string;
+        papel?: string;
+        edicion?: string;
+        tipoArcilla?: string;
+        temperaturaCoccion?: number;
+    }>({
         nombre: '',
-        precioBase: '',
-        estilo: '',
-        tecnica: '',
-        imagenUrl: '',
+        precioBase: 0,
         estatus: 'Disponible',
-        artistaId: '',
-        generoId: ''
+        imagenUrl: '',
+        artistaId: 0,
+        generoId: 0
     });
 
     const { data: obraEdicion } = useQuery({
@@ -33,18 +67,34 @@ export default function NuevaObraPage() {
 
     useEffect(() => {
         if (obraEdicion) {
-            setFormData({
-                nombre: obraEdicion.nombre,
-                precioBase: obraEdicion.precioBase.toString(),
-                estilo: obraEdicion.estilo || '',
-                tecnica: obraEdicion.tecnica || '',
-                imagenUrl: obraEdicion.imagenUrl,
-                estatus: obraEdicion.estatus,
-                artistaId: obraEdicion.artista?.id.toString() || '',
-                generoId: obraEdicion.genero?.id.toString() || ''
-            });
+            const data = obraEdicion as any;
+
+            setFormData(prev => ({
+                ...prev,
+                nombre: data.nombre || '',
+                precioBase: data.precioBase || 0,
+                estatus: data.estatus || 'Disponible',
+                imagenUrl: data.imagenUrl || '',
+                artistaId: data.artista?.id || 0,
+                generoId: data.genero?.id || 0,
+                // Campos específicos 
+                tecnica: data.tecnica || '',
+                estilo: data.estilo || '',
+                material: data.material || '',
+                peso: data.peso || 0,
+                largo: data.largo || 0,
+                ancho: data.ancho || 0,
+                profundidad: data.profundidad || 0,
+                purezaMetal: data.purezaMetal || '',
+                metalBase: data.metalBase || '',
+                tipoImpresion: data.tipoImpresion || '',
+                papel: data.papel || '',
+                edicion: data.edicion || '',
+                tipoArcilla: data.tipoArcilla || '',
+                temperaturaCoccion: data.temperaturaCoccion || 0
+            }));
         }
-    }, [obraEdicion])
+    }, [obraEdicion]);
 
     // 2. Cargar datos necesarios para los Selects
     const { data: artistas } = useQuery({
@@ -57,6 +107,61 @@ export default function NuevaObraPage() {
         queryFn: () => api.get('api/genres').json<Genre[]>()
     });
 
+    //discriminacion de tipo de dato por genero
+
+    const renderCamposExtra = () => {
+        const gen = generos?.find(g => g.id === formData.generoId)?.nombre;
+
+        switch (gen) {
+            case 'Pintura':
+                return (
+                    <>
+                        <FormInput label="Técnica" value={formData.tecnica} onChange={(v: string) => setFormData({ ...formData, tecnica: v })} />
+                        <FormInput label="Estilo" value={formData.estilo} onChange={(v: string) => setFormData({ ...formData, estilo: v })} />
+                    </>
+                );
+            case 'Escultura':
+                return (
+                    <>
+                        <FormInput label="Material" value={formData.material} onChange={(v: string) => setFormData({ ...formData, material: v })} />
+                        <FormInput label="Peso (kg)" type="number" value={formData.peso} onChange={(v: number) => setFormData({ ...formData, peso: v })} />
+                        <FormInput label="altura (cm)" type="number" value={formData.largo} onChange={(v: number) => setFormData({ ...formData, largo: v })} />
+                    </>
+                );
+            case 'Orfebreria':
+                return (
+                    <>
+                        <FormInput label="Pureza del Metal" value={formData.purezaMetal} onChange={(v: string) => setFormData({ ...formData, purezaMetal: v })} />
+                        <FormInput label="Metal Base" value={formData.metalBase} onChange={(v: string) => setFormData({ ...formData, metalBase: v })} />
+                        <FormInput label="Peso (kg)" type="number" value={formData.peso} onChange={(v: number) => setFormData({ ...formData, peso: v })} />
+                    </>
+                );
+
+            case 'Fotografia':
+                return (
+                    <>
+                        <FormInput label="Tipo de impresion" value={formData.tipoImpresion} onChange={(v: string) => setFormData({ ...formData, tipoImpresion: v })} />
+                        <FormInput label="papel" value={formData.papel} onChange={(v: string) => setFormData({ ...formData, papel: v })} />
+                        <FormInput label="edicion" value={formData.edicion} onChange={(v: string) => setFormData({ ...formData, edicion: v })} />
+                    </>
+                );
+
+            case 'Ceramica':
+                return (
+                    <>
+                        <FormInput label="Tipo de Arcilla" value={formData.tipoArcilla} onChange={(v: string) => setFormData({ ...formData, tipoArcilla: v })} />
+                        <FormInput label="temperatura de Coccion" value={formData.temperaturaCoccion} onChange={(v: number) => setFormData({ ...formData, temperaturaCoccion: v })} />
+                    </>
+                );
+            default:
+                return null;
+        }
+    };
+
+
+
+
+
     // 3. Mutación para enviar los datos (POST)
     const mutation = useMutation<Art, Error, CreateArtDTO>({
         mutationFn: (nuevaObra: CreateArtDTO) => {
@@ -65,35 +170,65 @@ export default function NuevaObraPage() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['arts'] });
             alert('¡Obra guardada con éxito!');
-            router.push('/admin');
+            router.push('/admin/dashboard');
         },
         onError: () => {
             alert('Error al guardar la obra. Revisa la consola o los logs de Docker.');
         }
     });
 
+    //manejo de cambio de Genero
+    const handleGeneroChange = (id: number) => {
+        setFormData(prev => ({
+            ...prev,
+            generoId: id,
+            tecnica: '', estilo: '', material: '', peso: 0,
+            largo: 0, ancho: 0, profundidad: 0, purezaMetal: '',
+            metalBase: '', tipoImpresion: '', papel: '',
+            edicion: '', tipoArcilla: '', temperaturaCoccion: 0
+        }));
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-
-        const payload: CreateArtDTO = {
+        const basePayload = {
             nombre: formData.nombre,
             precioBase: Number(formData.precioBase),
-            estilo: formData.estilo,
-            tecnica: formData.tecnica,
+            estatus: formData.estatus,
+            fechaCreacion: new Date().toISOString().split('T')[0],
             imagenUrl: formData.imagenUrl,
-            estatus: formData.estatus as 'Disponible' | 'Reservada' | 'Vendida',
-            fechaCreacion: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-            artista: { id: Number(formData.artistaId) } as Artist,
-            genero: { id: Number(formData.generoId) } as Genre
+            artista: { id: formData.artistaId },
+            genero: { id: formData.generoId }
         };
+
+        const gen = generos?.find(g => g.id === formData.generoId)?.nombre;
+        let finalPayload: any = { ...basePayload };
+
+        switch (gen) {
+            case 'Pintura':
+                finalPayload = { ...finalPayload, tecnica: formData.tecnica, estilo: formData.estilo };
+                break;
+            case 'Escultura':
+                finalPayload = { ...finalPayload, material: formData.material, peso: formData.peso, largo: formData.largo, ancho: formData.ancho, profundidad: formData.profundidad };
+                break;
+            case 'Orfebrería':
+                finalPayload = { ...finalPayload, purezaMetal: formData.purezaMetal, metalBase: formData.metalBase, peso: formData.peso };
+                break;
+            case 'Fotografia':
+                finalPayload = { ...finalPayload, tipoImpresion: formData.tipoImpresion, papel: formData.papel, edicion: formData.edicion };
+                break;
+            case 'Ceramica':
+                finalPayload = { ...finalPayload, tipoArcilla: formData.tipoArcilla, temperaturaCoccion: formData.temperaturaCoccion };
+                break;
+        }
 
         if (id) {
             // modo editar
-            api.put(`api/arts/${id}`, { json: payload });
+            api.put(`api/arts/${id}`, { json: finalPayload });
         } else {
             // modo crear
-            mutation.mutate(payload as CreateArtDTO);
+            mutation.mutate(finalPayload);
         }
     };
 
@@ -122,7 +257,7 @@ export default function NuevaObraPage() {
                             required
                             className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             value={formData.artistaId}
-                            onChange={(e) => setFormData({ ...formData, artistaId: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, artistaId: Number(e.target.value) })}
                         >
                             <option value="">Seleccionar...</option>
                             {artistas?.map(a => <option key={a.id} value={a.id}>{a.nombre}</option>)}
@@ -136,7 +271,7 @@ export default function NuevaObraPage() {
                             required
                             className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             value={formData.generoId}
-                            onChange={(e) => setFormData({ ...formData, generoId: e.target.value })}
+                            onChange={(e) => handleGeneroChange(Number(e.target.value))}
                         >
                             <option value="">Seleccionar...</option>
                             {generos?.map(g => <option key={g.id} value={g.id}>{g.nombre}</option>)}
@@ -151,22 +286,11 @@ export default function NuevaObraPage() {
                             type="number"
                             className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             value={formData.precioBase}
-                            onChange={(e) => setFormData({ ...formData, precioBase: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, precioBase: Number(e.target.value) })}
                         />
                     </div>
 
-                    {/* Técnica */}
-                    <div>
-                        <label className="block text-xs font-bold text-stone-500 uppercase mb-2">Técnica</label>
-                        <input
-                            required
-                            placeholder="Ej: Óleo, Acrílico"
-                            type="text"
-                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
-                            value={formData.tecnica}
-                            onChange={(e) => setFormData({ ...formData, tecnica: e.target.value })}
-                        />
-                    </div>
+                    {renderCamposExtra()}
 
                     {/* URL de la Imagen */}
                     <div className="md:col-span-2">
