@@ -35,7 +35,12 @@ export default function ArtDetailPage() {
 
     // 2. Mutación para reservar la obra
     const reserveMutation = useMutation({
-        mutationFn: () => api.patch(`api/arts/${id}/reservar`).json<Art>(),
+        mutationFn: () => {
+            const storedUser = localStorage.getItem('user');
+            const user = storedUser ? JSON.parse(storedUser) : null;
+            const buyerId = user?.id;
+            return api.patch(`api/arts/${id}/reservar/${buyerId}`).json<Art>()
+        },
         onSuccess: (updatedArt) => {
             alert(`¡Éxito! La obra "${updatedArt.nombre}" ha sido reservada.`);
             // Refrescamos los datos de la obra en la interfaz

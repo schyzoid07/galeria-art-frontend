@@ -42,20 +42,22 @@ export default function FacturacionPage() {
             <h1 className="text-2xl font-bold mb-6">Obras por Facturar</h1>
 
             <div className="grid gap-4">
-                {obrasReservadas?.map((obra) => (
-                    <div key={obra.id} className="bg-white p-6 rounded-xl border flex justify-between items-center">
-                        <div>
-                            <h3 className="font-bold">{obra.nombre}</h3>
-                            <p className="text-sm text-stone-500">Reservado por: {obra.compradorReserva?.nombre}</p>
-                        </div>
-                        <button
-                            onClick={() => setSelectedObra(obra)}
-                            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-                        >
-                            Emitir Factura
-                        </button>
-                    </div>
-                ))}
+                {obrasReservadas?.map((obra) => {
+                    console.log("Obra:", obra.nombre, "Comprador:", obra.compradorReserva);
+                    return (
+                        <div key={obra.id} className="bg-white p-6 rounded-xl border flex justify-between items-center">
+                            <div>
+                                <h3 className="font-bold">{obra.nombre}</h3>
+                                <p className="text-sm text-stone-500">Reservado por: {obra.compradorReserva?.nombre}</p>
+                            </div>
+                            <button
+                                onClick={() => setSelectedObra(obra)}
+                                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                            >
+                                Emitir Factura
+                            </button>
+                        </div>);
+                })}
             </div>
 
             {/* Modal simple de facturación */}
