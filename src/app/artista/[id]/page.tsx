@@ -50,10 +50,7 @@ export default function ArtistaPage() {
                         <p className="text-2xl font-bold text-gray-900">{obrasDelArtista?.length}</p>
                         <p className="text-xs text-gray-500 uppercase tracking-widest">Obras en Galería</p>
                     </div>
-                    <div>
-                        <p className="text-2xl font-bold text-gray-900">{artista.porcentajeGanancia}%</p>
-                        <p className="text-xs text-gray-500 uppercase tracking-widest">Comisión</p>
-                    </div>
+
                 </div>
             </div>
 
