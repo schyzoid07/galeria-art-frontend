@@ -6,17 +6,12 @@ import { Art } from '@/types/art';
 import ArtCard from '@/components/ArtCard';
 
 export default function ArtistaPage() {
-    const { id } = useParams(); // Obtenemos el ID de la URL
-
-    // 1. Buscamos las obras de este artista para mostrar su galería personal
-    // Nota: Aquí podrías crear un endpoint en Spring Boot que sea /api/arts/artista/{id}
-    // Por ahora, filtraremos todas las obras para obtener los datos del artista
+    const { id } = useParams();
     const { data: allArts, isLoading } = useQuery({
         queryKey: ['arts'],
         queryFn: () => api.get('api/arts').json<Art[]>(),
     });
 
-    // Buscamos al artista dentro de las obras (simulación)
     const artistaObra = allArts?.find(a => a.artista.id === Number(id));
     const obrasDelArtista = allArts?.filter(a => a.artista.id === Number(id));
 

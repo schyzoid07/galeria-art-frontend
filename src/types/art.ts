@@ -1,9 +1,12 @@
 export interface Artist {
     id: number;
     nombre: string;
-    nacionalidad: string;
     biografia: string;
+    nacionalidad: string;
+    fechaNacimiento: string;
+    fotoUrl: string;
     porcentajeGanancia: number;
+    generos: Genre[];
 }
 
 export interface Genre {
@@ -42,7 +45,7 @@ export interface Sculpture extends Art {
 export interface Orphebrery extends Art {
     purezaMetal: string;
     metalBase: string;
-    peso: number; // Ahora es único para este contexto
+    peso: number;
 }
 
 export interface Photography extends Art {
