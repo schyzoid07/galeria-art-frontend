@@ -14,8 +14,20 @@ export default function GenerosPage() {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id: number) => api.delete(`api/genres/${id}`),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['generos'] })
+        mutationFn: async (id: number) => {
+            const response = await api.delete(`api/genres/${id}`);
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(errorMessage);
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['generos'] });
+        },
+        onError: (error: Error) => {
+            alert('Error este genero tiene obras asociadas a el ');
+        }
     });
 
     if (isLoading) return <div className="p-8">Cargando géneros...</div>;
@@ -25,7 +37,7 @@ export default function GenerosPage() {
             <div className="max-w-2xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-2xl font-serif font-bold text-gray-950">Géneros</h1>
-                    <button onClick={() => router.push('/admin/generos/nuevo')} className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold">Nuevo</button>
+                    <button onClick={() => router.push('/admin/generos/nuevo-genero')} className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold">Nuevo</button>
                 </div>
 
                 <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
@@ -33,7 +45,7 @@ export default function GenerosPage() {
                         <div key={g.id} className="flex justify-between items-center p-4 border-b border-stone-100 last:border-0">
                             <span className="font-medium text-stone-900">{g.nombre}</span>
                             <div className="flex gap-2">
-                                <button onClick={() => router.push(`/admin/generos/editar?id=${g.id}`)} className="text-sm font-bold text-stone-600">Editar</button>
+                                <button onClick={() => router.push(`/admin/generos/nuevo-genero?id=${g.id}`)} className="text-sm font-bold text-stone-600">Editar</button>
                                 <button onClick={() => deleteMutation.mutate(g.id)} className="text-sm font-bold text-red-600">Eliminar</button>
                             </div>
                         </div>

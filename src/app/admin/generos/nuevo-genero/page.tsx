@@ -25,11 +25,11 @@ export default function NuevoGeneroPage() {
     return (
         <div className="min-h-screen bg-stone-50 p-8">
             <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-sm border">
-                <h1 className="text-xl font-bold mb-6">{id ? 'Editar' : 'Nuevo'} Género</h1>
+                <h1 className="text-xl font-bold text-black mb-6">{id ? 'Editar' : 'Nuevo'} Género</h1>
                 <form onSubmit={(e) => { e.preventDefault(); mutation.mutate({ nombre }); }}>
-                    <input className="w-full p-3 border rounded-xl mb-4" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej: Pintura" />
+                    <input className="w-full p-3 text-black border rounded-xl mb-4" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej: Pintura" />
                     <div className="flex gap-2">
-                        <button type="button" onClick={() => router.back()} className="flex-1 px-4 py-2 rounded-xl border">Cancelar</button>
+                        <button type="button" onClick={() => router.back()} className="flex-1 px-4 py-2 text-black rounded-xl border">Cancelar</button>
                         <button type="submit" className="flex-1 bg-slate-900 text-white py-2 rounded-xl">Guardar</button>
                     </div>
                 </form>
