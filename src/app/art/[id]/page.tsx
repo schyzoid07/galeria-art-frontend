@@ -16,12 +16,16 @@ export default function ArtDetailPage() {
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
+
         if (storedUser) {
             try {
-                setUser(JSON.parse(storedUser) as Buyer);
+                const parsed = JSON.parse(storedUser);
+                setUser(parsed.user ? parsed.user : parsed);
             } catch (e) { console.error("Error al cargar usuario", e); }
         }
     }, []);
+
+
 
     // 1. Query para obtener los detalles de la obra
     const { data: art, isLoading, error } = useQuery<Art>({
@@ -99,6 +103,7 @@ export default function ArtDetailPage() {
 
                     {/* Lógica de Botones Condicionales */}
                     <div className="mt-12">
+
                         {!user ? (
                             <Link href="/login" className="block w-full text-center py-5 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-all">
                                 Autenticarse para comprar
@@ -110,6 +115,7 @@ export default function ArtDetailPage() {
                             </div>
                         ) : !user.membresiaPaga ? (
                             // Lógica para Buyer sin membresía
+
                             <MembershipButton
                                 user={user}
                                 onSuccess={(updated) => {
