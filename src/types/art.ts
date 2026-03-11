@@ -16,7 +16,11 @@ export interface Genre {
 
 
 // Base (Campos comunes que toda Obra tiene)
-export interface Art {
+// En @/types/art.ts
+
+export type Art = Painting | Sculpture | Orphebrery | Photography | Ceramic;
+
+export interface BaseArt {
     id: number;
     nombre: string;
     precioBase: number;
@@ -24,40 +28,14 @@ export interface Art {
     estatus: 'Disponible' | 'Reservada' | 'Vendida';
     imagenUrl: string;
     artista: Artist;
-    genero: Genre;
+    genero: { id: number; nombre: string };
 }
 
-// Especializaciones (Extienden a Art y añaden sus campos únicos)
-
-export interface Painting extends Art {
-    tecnica: string;
-    estilo: string;
-}
-
-export interface Sculpture extends Art {
-    material: string;
-    peso: number;
-    largo: number;
-    ancho: number;
-    profundidad: number;
-}
-
-export interface Orphebrery extends Art {
-    purezaMetal: string;
-    metalBase: string;
-    peso: number;
-}
-
-export interface Photography extends Art {
-    tipoImpresion: string;
-    papel: string;
-    edicion: string;
-}
-
-export interface Ceramic extends Art {
-    tipoArcilla: string;
-    temperaturaCoccion: number;
-}
+export interface Painting extends BaseArt { tecnica: string; estilo: string; }
+export interface Sculpture extends BaseArt { material: string; peso: number; largo: number; ancho: number; profundidad: number; }
+export interface Orphebrery extends BaseArt { purezaMetal: string; metalBase: string; peso: number; }
+export interface Photography extends BaseArt { tipoImpresion: string; papel: string; edicion: string; }
+export interface Ceramic extends BaseArt { tipoArcilla: string; temperaturaCoccion: number; }
 
 //para el paylaod de creacion de obra
 export type CreateArtDTO = Omit<Art, 'id'>;
