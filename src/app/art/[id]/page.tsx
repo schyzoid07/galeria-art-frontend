@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Art, Buyer } from '@/types/art';
+import { Art, Buyer, Ceramic, Orphebrery, Painting, Photography, Sculpture } from '@/types/art';
 import { MembershipButton } from '@/components/MembershipButton';
 import { ArtDetailField } from '@/components/ArtDetailField';
 
@@ -56,6 +56,65 @@ export default function ArtDetailPage() {
     if (isLoading) return <div className="p-20 text-center font-serif text-2xl">Cargando obra maestra...</div>;
     if (error || !art) return <div className="p-20 text-center">Obra no encontrada o error de conexión.</div>;
 
+    // Render para obtener datos especificos del genero
+
+    const renderSpecificDetails = () => {
+        const genero = art.genero?.nombre.toLowerCase();
+
+        switch (genero) {
+            case 'pintura': {
+                const p = art as Painting;
+                return (
+                    <>
+                        <ArtDetailField label="Técnica" value={p.tecnica} />
+                        <ArtDetailField label="Estilo" value={p.estilo} />
+                    </>
+                );
+            }
+            case 'escultura': {
+                const s = art as Sculpture;
+                return (
+                    <>
+                        <ArtDetailField label="Material" value={s.material} />
+                        <ArtDetailField label="Peso" value={`${s.peso} kg`} />
+                        <ArtDetailField label="Dimensiones" value={`${s.largo}x${s.ancho}x${s.profundidad} cm`} />
+                    </>
+                );
+            }
+            case 'orfebreria': {
+                const o = art as Orphebrery;
+                return (
+                    <>
+                        <ArtDetailField label="Metal Base" value={o.metalBase} />
+                        <ArtDetailField label="Pureza" value={o.purezaMetal} />
+                        <ArtDetailField label="Peso" value={`${o.peso} g`} />
+                    </>
+                );
+            }
+            case 'fotografia': {
+                const ph = art as Photography;
+                return (
+                    <>
+                        <ArtDetailField label="Impresión" value={ph.tipoImpresion} />
+                        <ArtDetailField label="Papel" value={ph.papel} />
+                        <ArtDetailField label="Edición" value={ph.edicion} />
+                    </>
+                );
+            }
+            case 'ceramica': {
+                const c = art as Ceramic;
+                return (
+                    <>
+                        <ArtDetailField label="Tipo de Arcilla" value={c.tipoArcilla} />
+                        <ArtDetailField label="Temperatura" value={`${c.temperaturaCoccion}°C`} />
+                    </>
+                );
+            }
+            default:
+                return <p className="text-stone-400">Sin detalles adicionales</p>;
+        }
+    };
+
     return (
         <div className="min-h-screen bg-stone-50 pt-32 pb-20 px-6">
             <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
@@ -88,22 +147,15 @@ export default function ArtDetailPage() {
                         </p>
                     </div>
 
-                    {/* Especificaciones Dinámicas (Opción 1 que elegiste) */}
+                    {/* Especificaciones Dinámicas  */}
+                    {/* Especificaciones Dinámicas Limpias */}
                     <div className="grid grid-cols-2 gap-x-12 gap-y-8">
+                        {/* Campos que siempre existen */}
                         <ArtDetailField label="Género" value={art.genero?.nombre} />
-                        <ArtDetailField label="Técnica" value={art.tecnica} />
-                        <ArtDetailField label="Estilo" value={art.estilo} />
-                        <ArtDetailField label="Material" value={art.material} />
-                        <ArtDetailField label="Pureza" value={art.purezaMetal} />
-                        <ArtDetailField label="Peso" value={art.peso ? `${art.peso} kg` : undefined} />
-                        <ArtDetailField label="Dimensiones" value={
-                            art.largo && art.ancho ? `${art.largo}x${art.ancho} cm` : undefined
-                        } />
-                        <ArtDetailField label="Impresión" value={art.tipoImpresion} />
-                        <ArtDetailField label="Papel" value={art.papel} />
-                        <ArtDetailField label="Edición" value={art.edicion} />
-                        <ArtDetailField label="Arcilla" value={art.tipoArcilla} />
-                        <ArtDetailField label="Cocción" value={art.temperaturaCoccion ? `${art.temperaturaCoccion}°C` : undefined} />
+                        <ArtDetailField label="Año" value={new Date(art.fechaCreacion).getFullYear().toString()} />
+
+                        {/* Campos específicos según el género */}
+                        {renderSpecificDetails()}
                     </div>
 
                     {/* Lógica de Botones Condicionales */}
