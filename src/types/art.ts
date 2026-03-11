@@ -11,7 +11,7 @@ export interface Genre {
     nombre: string;
 }
 
-// Interfaz Base y Especializaciones combinadas
+
 export interface Art {
     // Campos obligatorios (comunes)
     id: number;
@@ -48,6 +48,9 @@ export interface Art {
     tipoArcilla?: string;
     temperaturaCoccion?: number;
 }
+
+//para el paylaod de creacion de obra
+export type CreateArtDTO = Omit<Art, 'id'>;
 
 export interface User {
     id: number;

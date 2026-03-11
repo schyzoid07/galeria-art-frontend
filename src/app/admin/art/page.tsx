@@ -3,9 +3,12 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { Art } from '@/types/art'; // Asegúrate de tener tu tipo Art definido
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
 
 export default function AdminArtPage() {
     const router = useRouter();
+    const queryClient = useQueryClient();
     const [arts, setArts] = useState<Art[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -25,6 +28,25 @@ export default function AdminArtPage() {
     }, []);
 
     if (loading) return <div className="p-32 text-center">Cargando catálogo...</div>;
+
+
+    const handleDelete = async (id: number) => {
+        if (!confirm("¿Estás seguro de eliminar esta obra? Esta acción no se puede deshacer.")) return;
+
+        try {
+            await api.delete(`api/arts/${id}`);
+            setArts(prev => prev.filter(art => art.id !== id));
+            alert("Obra eliminada con éxito.");
+        } catch (err) {
+            alert("Error al eliminar la obra.");
+            console.error(err);
+        }
+    };
+
+
+    const handleEdit = async (id: number) => {
+        router.push(`/admin/art/nueva-obra?id=${id}`)
+    };
 
     return (
         <div className="min-h-screen bg-stone-50 pt-32 pb-20 px-6">
@@ -62,8 +84,22 @@ export default function AdminArtPage() {
                                     </span>
                                 </td>
                                 <td className="py-4 text-right">
-                                    <button className="text-stone-400 hover:text-slate-900 mx-2">Editar</button>
-                                    <button className="text-red-400 hover:text-red-600">Eliminar</button>
+                                    <Link
+                                        href={`/admin/art/nueva-obra?id=${art.id}`}
+                                        className="text-stone-400 hover:text-slate-900 mx-2"
+                                    >
+                                        Editar
+                                    </Link>
+                                    <button
+                                        onClick={() => handleDelete(art.id)}
+                                        disabled={art.estatus !== 'Disponible'} // Bloqueado si no está disponible
+                                        className={`font-bold ${art.estatus === 'Disponible'
+                                            ? 'text-red-400 hover:text-red-600 cursor-pointer'
+                                            : 'text-stone-300 cursor-not-allowed' // Gris cuando está bloqueado
+                                            }`}
+                                    >
+                                        Eliminar
+                                    </button>
                                 </td>
                             </tr>
                         ))}

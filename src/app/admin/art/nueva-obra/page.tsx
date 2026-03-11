@@ -1,13 +1,17 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
-import { Artist, Genre } from '@/types/art';
+import { Artist, Genre, Art, CreateArtDTO } from '@/types/art';
+import { useSearchParams } from 'next/navigation';
 
 export default function NuevaObraPage() {
     const router = useRouter();
     const queryClient = useQueryClient();
+    const searchParams = useSearchParams();
+
+    const id = searchParams.get('id');
 
     // 1. Estados para el formulario
     const [formData, setFormData] = useState({
@@ -21,25 +25,44 @@ export default function NuevaObraPage() {
         generoId: ''
     });
 
+    const { data: obraEdicion } = useQuery({
+        queryKey: ['art', id],
+        queryFn: () => api.get(`api/arts/${id}`).json<Art>(),
+        enabled: !!id,
+    });
+
+    useEffect(() => {
+        if (obraEdicion) {
+            setFormData({
+                nombre: obraEdicion.nombre,
+                precioBase: obraEdicion.precioBase.toString(),
+                estilo: obraEdicion.estilo || '',
+                tecnica: obraEdicion.tecnica || '',
+                imagenUrl: obraEdicion.imagenUrl,
+                estatus: obraEdicion.estatus,
+                artistaId: obraEdicion.artista?.id.toString() || '',
+                generoId: obraEdicion.genero?.id.toString() || ''
+            });
+        }
+    }, [obraEdicion])
+
     // 2. Cargar datos necesarios para los Selects
-    // Nota: Asumo que tienes estos endpoints en tu Java. Si no, avísame.
     const { data: artistas } = useQuery({
         queryKey: ['artistas'],
-        queryFn: () => api.get('api/artists').json<Artista[]>()
+        queryFn: () => api.get('api/artists').json<Artist[]>()
     });
 
     const { data: generos } = useQuery({
         queryKey: ['generos'],
-        queryFn: () => api.get('api/genres').json<Genero[]>()
+        queryFn: () => api.get('api/genres').json<Genre[]>()
     });
 
     // 3. Mutación para enviar los datos (POST)
-    const mutation = useMutation({
-        mutationFn: (nuevaObra: any) => {
-            return api.post('api/arts', { json: nuevaObra }).json();
+    const mutation = useMutation<Art, Error, CreateArtDTO>({
+        mutationFn: (nuevaObra: CreateArtDTO) => {
+            return api.post('api/arts', { json: nuevaObra }).json<Art>();
         },
         onSuccess: () => {
-            // Invalidamos la cache para que el catálogo se actualice solo
             queryClient.invalidateQueries({ queryKey: ['arts'] });
             alert('¡Obra guardada con éxito!');
             router.push('/admin');
@@ -52,20 +75,26 @@ export default function NuevaObraPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Estructuramos el JSON exactamente como lo espera tu Java
-        const payload = {
+
+        const payload: CreateArtDTO = {
             nombre: formData.nombre,
             precioBase: Number(formData.precioBase),
             estilo: formData.estilo,
             tecnica: formData.tecnica,
             imagenUrl: formData.imagenUrl,
-            estatus: formData.estatus,
+            estatus: formData.estatus as 'Disponible' | 'Reservada' | 'Vendida',
             fechaCreacion: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-            artista: { id: Number(formData.artistaId) },
-            genero: { id: Number(formData.generoId) }
+            artista: { id: Number(formData.artistaId) } as Artist,
+            genero: { id: Number(formData.generoId) } as Genre
         };
 
-        mutation.mutate(payload);
+        if (id) {
+            // modo editar
+            api.put(`api/arts/${id}`, { json: payload });
+        } else {
+            // modo crear
+            mutation.mutate(payload as CreateArtDTO);
+        }
     };
 
     return (
@@ -80,7 +109,7 @@ export default function NuevaObraPage() {
                         <input
                             required
                             type="text"
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none"
+                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             value={formData.nombre}
                             onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                         />
@@ -91,7 +120,7 @@ export default function NuevaObraPage() {
                         <label className="block text-xs font-bold text-stone-500 uppercase mb-2">Artista</label>
                         <select
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none bg-white"
+                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             value={formData.artistaId}
                             onChange={(e) => setFormData({ ...formData, artistaId: e.target.value })}
                         >
@@ -105,7 +134,7 @@ export default function NuevaObraPage() {
                         <label className="block text-xs font-bold text-stone-500 uppercase mb-2">Género</label>
                         <select
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none bg-white"
+                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             value={formData.generoId}
                             onChange={(e) => setFormData({ ...formData, generoId: e.target.value })}
                         >
@@ -120,7 +149,7 @@ export default function NuevaObraPage() {
                         <input
                             required
                             type="number"
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none"
+                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             value={formData.precioBase}
                             onChange={(e) => setFormData({ ...formData, precioBase: e.target.value })}
                         />
@@ -133,7 +162,7 @@ export default function NuevaObraPage() {
                             required
                             placeholder="Ej: Óleo, Acrílico"
                             type="text"
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none"
+                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             value={formData.tecnica}
                             onChange={(e) => setFormData({ ...formData, tecnica: e.target.value })}
                         />
@@ -146,7 +175,7 @@ export default function NuevaObraPage() {
                             required
                             type="url"
                             placeholder="https://..."
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none"
+                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
                             value={formData.imagenUrl}
                             onChange={(e) => setFormData({ ...formData, imagenUrl: e.target.value })}
                         />
