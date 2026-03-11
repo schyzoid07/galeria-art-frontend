@@ -13,6 +13,16 @@ export default function ArtistasPage() {
         queryFn: () => api.get('api/artists').json<Artist[]>()
     });
 
+    // Mutación para eliminar
+    const deleteMutation = useMutation({
+        mutationFn: (id: number) => api.delete(`api/artists/${id}`),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['artistas'] });
+            alert('Artista eliminado con éxito');
+        },
+        onError: () => alert('Error al eliminar el artista')
+    });
+
     if (isLoading) return <div className="p-8">Cargando artistas...</div>;
 
     return (
@@ -21,7 +31,7 @@ export default function ArtistasPage() {
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-2xl font-serif font-bold text-gray-950">Gestión de Artistas</h1>
                     <button
-                        onClick={() => router.push('/admin/artistas/nuevo')}
+                        onClick={() => router.push('/admin/artists/nuevo-artista')}
                         className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800"
                     >
                         Nuevo Artista
@@ -35,20 +45,23 @@ export default function ArtistasPage() {
                             <p className="text-sm text-stone-500 mb-2">{artista.nacionalidad}</p>
                             <p className="text-sm text-stone-700 line-clamp-2 mb-4">{artista.biografia}</p>
 
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                {artista.generos?.map(g => (
-                                    <span key={g.id} className="px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-lg">
-                                        {g.nombre}
-                                    </span>
-                                ))}
-                            </div>
-
                             <div className="flex gap-2">
+
                                 <button
-                                    onClick={() => router.push(`/admin/artistas/editar?id=${artista.id}`)}
+                                    onClick={() => router.push(`/admin/artists/nuevo-artista?id=${artista.id}`)}
                                     className="px-4 py-2 text-sm font-bold text-stone-600 border border-stone-200 rounded-xl hover:bg-stone-50"
                                 >
                                     Editar
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        if (confirm('¿Estás seguro de eliminar este artista?')) {
+                                            deleteMutation.mutate(artista.id);
+                                        }
+                                    }}
+                                    className="px-4 py-2 text-sm font-bold text-red-600 border border-red-200 rounded-xl hover:bg-red-50"
+                                >
+                                    Eliminar
                                 </button>
                             </div>
                         </div>
