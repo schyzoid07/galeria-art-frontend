@@ -1,11 +1,11 @@
 interface Props {
     label: string;
-    value?: string | number;
+    value?: string | number | null;
 }
 
 export function ArtDetailField({ label, value }: Props) {
-    // Si no hay valor, no renderizamos nada (para evitar espacios vacíos)
-    if (!value) return null;
+    // Si no hay valor, no renderizamos (para evitar espacios vacíos)
+    if (value === null || value === undefined || value === '') return null;
 
     return (
         <div>

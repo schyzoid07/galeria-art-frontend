@@ -19,7 +19,7 @@ const FormInput = ({ label, value, onChange, type = "text" }: any) => (
 );
 
 
-//Componente principal
+//COMPONENTE PRINCIPAL
 export default function NuevaObraPage() {
     const router = useRouter();
     const queryClient = useQueryClient();
@@ -35,6 +35,7 @@ export default function NuevaObraPage() {
         estatus: 'Disponible' | 'Reservada' | 'Vendida';
         imagenUrl: string;
         artistaId: number;
+        fechaCreacion: number;
         generoId: number;
         tecnica?: string;
         estilo?: string;
@@ -53,6 +54,7 @@ export default function NuevaObraPage() {
     }>({
         nombre: '',
         precioBase: 0,
+        fechaCreacion: new Date().getFullYear(),
         estatus: 'Disponible',
         imagenUrl: '',
         artistaId: 0,
@@ -75,6 +77,7 @@ export default function NuevaObraPage() {
                 precioBase: data.precioBase || 0,
                 estatus: data.estatus || 'Disponible',
                 imagenUrl: data.imagenUrl || '',
+                fechaCreacion: data.fechaCreacion || 0,
                 artistaId: data.artista?.id || 0,
                 generoId: data.genero?.id || 0,
                 // Campos específicos 
@@ -192,11 +195,20 @@ export default function NuevaObraPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        const anio = Number(formData.fechaCreacion);
+        const anioActual = new Date().getFullYear();
+
+        //Validacion de que en  el campo de input año, se haya puesto un number
+        if (isNaN(anio) || anio > anioActual) {
+            alert(`Por favor, ingresa un año válido antes de ${anioActual}.`);
+            return;
+        }
+
         const basePayload = {
             nombre: formData.nombre,
             precioBase: Number(formData.precioBase),
             estatus: formData.estatus,
-            fechaCreacion: new Date().toISOString().split('T')[0],
+            fechaCreacion: Number(formData.fechaCreacion),
             imagenUrl: formData.imagenUrl,
             artista: { id: formData.artistaId },
             genero: { id: formData.generoId }
@@ -288,6 +300,22 @@ export default function NuevaObraPage() {
                             value={formData.precioBase}
                             onChange={(e) => setFormData({ ...formData, precioBase: Number(e.target.value) })}
                         />
+                    </div>
+                    {/*año de creacion */}
+                    <div>
+                        <label className="block text-xs font-bold text-stone-500 uppercase mb-2">
+                            Año (Negativo para A.C.)
+                        </label>
+                        <input
+                            required
+                            type="number"
+                            className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none"
+                            value={formData.fechaCreacion}
+                            onChange={(e) => setFormData({ ...formData, fechaCreacion: parseInt(e.target.value) || 0 })}
+                        />
+                        <p className="text-[13px] text-stone-400 mt-1">
+                            Ej: -500 (para 500 A.C.), 2026 (para 2026 D.C.)
+                        </p>
                     </div>
 
                     {renderCamposExtra()}

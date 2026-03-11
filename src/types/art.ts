@@ -24,7 +24,7 @@ export interface BaseArt {
     id: number;
     nombre: string;
     precioBase: number;
-    fechaCreacion: string;
+    fechaCreacion: number;
     estatus: 'Disponible' | 'Reservada' | 'Vendida';
     imagenUrl: string;
     artista: Artist;

@@ -8,11 +8,14 @@ import Link from 'next/link';
 import { Art, Buyer, Ceramic, Orphebrery, Painting, Photography, Sculpture } from '@/types/art';
 import { MembershipButton } from '@/components/MembershipButton';
 import { ArtDetailField } from '@/components/ArtDetailField';
+import { mostrarAnio } from '@/utils/formatters';
+
 
 export default function ArtDetailPage() {
     const { id } = useParams();
     const queryClient = useQueryClient(); // Para refrescar los datos automáticamente
     const [user, setUser] = useState<Buyer | null>(null);
+
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -152,7 +155,11 @@ export default function ArtDetailPage() {
                     <div className="grid grid-cols-2 gap-x-12 gap-y-8">
                         {/* Campos que siempre existen */}
                         <ArtDetailField label="Género" value={art.genero?.nombre} />
-                        <ArtDetailField label="Año" value={new Date(art.fechaCreacion).getFullYear().toString()} />
+
+                        <ArtDetailField
+                            label="Año de Creación"
+                            value={mostrarAnio(art.fechaCreacion)}
+                        />
 
                         {/* Campos específicos según el género */}
                         {renderSpecificDetails()}
