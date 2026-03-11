@@ -64,12 +64,12 @@ export default function FacturacionPage() {
             {selectedObra && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
                     <div className="bg-white p-8 rounded-2xl w-96">
-                        <h2 className="text-lg font-bold mb-4">Emitir Factura: {selectedObra.nombre}</h2>
-                        <input className="w-full border p-2 mb-2 rounded" placeholder="Código de Seguridad" onChange={e => setFormData({ ...formData, codigoSeguridad: e.target.value })} />
-                        <input className="w-full border p-2 mb-4 rounded" placeholder="Dirección de Envío" onChange={e => setFormData({ ...formData, direccion: e.target.value })} />
+                        <h2 className="text-lg text-black font-bold mb-4">Emitir Factura: {selectedObra.nombre}</h2>
+                        <input className="w-full border text-black p-2 mb-2 rounded" placeholder="Código de Seguridad" onChange={e => setFormData({ ...formData, codigoSeguridad: e.target.value })} />
+                        <input className="w-full border text-black p-2 mb-4 rounded" placeholder="Dirección de Envío" onChange={e => setFormData({ ...formData, direccion: e.target.value })} />
                         <div className="flex gap-2">
-                            <button onClick={() => setSelectedObra(null)} className="flex-1 border p-2 rounded">Cancelar</button>
-                            <button onClick={handleFacturar} className="flex-1 bg-black text-white p-2 rounded">Confirmar Venta</button>
+                            <button onClick={() => setSelectedObra(null)} className="flex-1 border p-2 text-black rounded">Cancelar</button>
+                            <button onClick={handleFacturar} className=" flex-1 bg-black text-white p-2 rounded">Confirmar Venta</button>
                         </div>
                     </div>
                 </div>
