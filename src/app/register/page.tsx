@@ -11,9 +11,12 @@ export default function RegisterPage() {
         apellido: '',
         email: '',
         password: '',
-        login: '', //
-        telefono: '', //
+        login: '',
+        telefono: '',
         activo: true,
+        direccionEnvio: '',
+        datosTarjetaMask: '',
+        membresiaPaga: false,
     });
 
     const mutation = useMutation({
@@ -44,68 +47,90 @@ export default function RegisterPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Nombre</label>
+                        <label className="block text-xs font-bold text-black uppercase tracking-widest mb-2">Nombre</label>
                         <input
                             required
                             type="text"
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 text-black focus:ring-slate-900 outline-none transition-all"
                             placeholder="Ej. Miguel Ángel"
                             onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Apellido</label>
+                        <label className="block text-xs font-bold text-black uppercase tracking-widest mb-2">Apellido</label>
                         <input
                             required
                             type="text"
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
-                            placeholder="Ej. Miguel Ángel"
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 text-black focus:ring-slate-900 outline-none transition-all"
+                            placeholder="Ej. Buonarroti"
                             onChange={(e) => setFormData({ ...formData, apellido: e.target.value })}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Correo Electrónico</label>
+                        <label className="block text-xs font-bold text-black uppercase tracking-widest mb-2">Correo Electrónico</label>
                         <input
                             required
                             type="email"
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 text-black focus:ring-slate-900 outline-none transition-all"
                             placeholder="tu@email.com"
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">Contraseña</label>
+                        <label className="block text-xs font-bold text-black uppercase tracking-widest mb-2">Contraseña</label>
                         <input
                             required
                             type="password"
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 text-black focus:ring-slate-900 outline-none transition-all"
                             placeholder="••••••••"
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">usuario</label>
+                        <label className="block text-xs font-bold text-black uppercase tracking-widest mb-2">usuario</label>
                         <input
                             type="text"
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 text-black focus:ring-slate-900 outline-none transition-all"
                             placeholder="tunombre123"
                             onChange={(e) => setFormData({ ...formData, login: e.target.value })}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-2">telefono</label>
+                        <label className="block text-xs font-bold text-black uppercase tracking-widest mb-2">telefono</label>
                         <input
                             type="tel"
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 text-black focus:ring-slate-900 outline-none transition-all"
                             placeholder="04267435641"
                             onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-bold text-black uppercase tracking-widest mb-2">Dirección de Envío</label>
+                        <textarea
+                            required
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 text-black focus:ring-slate-900 outline-none transition-all"
+                            placeholder="Ej. Av. Principal, Edificio Sol, Apto 5, Caracas"
+                            rows={3}
+                            onChange={(e) => setFormData({ ...formData, direccionEnvio: e.target.value })}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-bold text-black uppercase tracking-widest mb-2">Número de Tarjeta (últimos 4 dígitos)</label>
+                        <input
+                            required
+                            type="text"
+                            className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 text-black focus:ring-slate-900 outline-none transition-all"
+                            placeholder="**** **** **** 1234"
+                            onChange={(e) => setFormData({ ...formData, datosTarjetaMask: e.target.value })}
                         />
                     </div>
 

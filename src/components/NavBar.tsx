@@ -31,7 +31,7 @@ export default function Navbar() {
             }
         }
         setLoading(false);
-    }, []);
+    }, [pathname]);
 
     // Proteccion de rutas admin
     useEffect(() => {

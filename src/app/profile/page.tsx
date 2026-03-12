@@ -77,7 +77,7 @@ export default function ProfilePage() {
             <input
 
                 disabled={true} // Siempre deshabilitado
-                value={formData[field] || '***'}
+                value={formData[field] || 'SIN PAGAR'}
                 className="w-full p-3 bg-stone-100 rounded-xl border border-stone-200 text-slate-500 font-medium cursor-not-allowed"
             />
         </div>
@@ -112,9 +112,21 @@ export default function ProfilePage() {
                         <>
                             {renderInput("Dirección de Envío", "direccionEnvio")}
                             <div className="grid grid-cols-2 gap-4">
-                                {renderInput("Tarjeta (Máscara)", "datosTarjetaMask")}
+                                {renderInput("Número de Tarjeta (últimos 4 dígitos)", "datosTarjetaMask")}
                                 {/* AQUÍ USAMOS EL NUEVO COMPONENTE QUE ES SOLO DE LECTURA */}
                                 {renderReadOnly("Código de Seguridad", "codigoSeguridad")}
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1">Tipo de Membresía</label>
+                                <div
+                                    className={`w-full p-3 rounded-xl text-center font-bold
+                                        ${formData.membresiaPaga
+                                            ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                                            : 'bg-stone-100 text-stone-500 border border-stone-200'
+                                        }`}
+                                >
+                                    {formData.membresiaPaga ? 'Premium' : 'Básica'}
+                                </div>
                             </div>
                         </>
                     )}

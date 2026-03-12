@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { AuthResponse } from '@/types/art';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -12,14 +13,15 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
 
     const mutation = useMutation({
-        mutationFn: (credentials: any) =>
-            api.post('api/auth/login', { json: credentials }).json(),
-        onSuccess: (user: any) => {
-            console.log("Datos recibidos del back:", user);
-            // Guardamos el objeto Buyer que devuelve tu .map(ResponseEntity::ok)
-            localStorage.setItem('user', JSON.stringify(user));
+        mutationFn: (credentials: any): Promise<AuthResponse> =>
+            api.post('api/auth/login', { json: credentials }).json<AuthResponse>(),
+        onSuccess: (data) => {
+            console.log("Datos recibidos del back:", data);
+            // Guardamos el objeto AuthResponse que devuelve tu backend
+            localStorage.setItem('user', JSON.stringify(data));
 
-            alert(`¡Bienvenido, ${user.nombre}!`);
+            // Usamos data.user.nombre para el saludo
+            alert(`¡Bienvenido, ${data.user.nombre}!`);
 
             router.push('/');
             router.refresh();
