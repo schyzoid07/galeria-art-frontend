@@ -68,11 +68,15 @@ export interface AuthResponse {
 
 export interface Invoice {
     id: number;
-    fechaFacturacion: number; // O Date, dependiendo de cómo lo maneje el backend
+    fechaVenta: string; // Formato: "2026-03-12T07:52:54.054103"
     total: number;
     obra: Art; // Detalles completos de la obra
     comprador: Buyer; // Detalles completos del comprador
-    admin: User; // Detalles completos del administrador que facturó
+    administrador: User; // Detalles completos del administrador que facturó
+    direccionDestino: string;
+    iva: number;
+    montoGanancia: number;
+    porcentajeGanancia: number;
+    subtotal: number;
     codigoSeguridad?: string; // Opcional, podría no estar en la lista general
-    direccion?: string; // Opcional
 }

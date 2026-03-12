@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Art } from '@/types/art';
+import { User, Art, Invoice } from '@/types/art';
 import { getUserHistory, UserHistory } from '@/lib/api';
 import ArtCard from '@/components/ArtCard';
 import { useRouter } from 'next/navigation';
@@ -63,6 +63,32 @@ export default function PurchasesPage() {
         </section>
     );
 
+    const renderInvoices = (invoices: Invoice[], title: string) => (
+        <section>
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 mb-8">{title}</h2>
+            {invoices && invoices.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {invoices.map(invoice => (
+                        <div key={invoice.id} className="flex flex-col">
+                            <ArtCard art={invoice.obra} />
+                            <div className="bg-white p-4 rounded-b-lg shadow-md -mt-1 border-t border-gray-200">
+                                <div className="flex justify-between items-baseline">
+                                    <p className="text-sm font-bold text-slate-800">Factura #{invoice.id}</p>
+                                    <p className="font-semibold text-lg text-slate-900">${invoice.total.toLocaleString()}</p>
+                                </div>
+                                <p className="text-xs text-stone-500 mt-1">
+                                    {new Date(invoice.fechaVenta).toLocaleDateString('es-VE', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p className="text-stone-500">No tienes obras compradas.</p>
+            )}
+        </section>
+    );
+
     return (
         <div className="bg-stone-50 min-h-screen">
             <main className="max-w-7xl mx-auto px-6 py-24 pt-32">
@@ -82,12 +108,12 @@ export default function PurchasesPage() {
                 {!loading && !error && history && (
                     <div className="space-y-16">
                         {renderArtworks(history.reservas, 'Obras Reservadas')}
-                        {renderArtworks(history.facturas, 'Obras Compradas')}
+                        {renderInvoices(history.facturas, 'Obras Compradas')}
                     </div>
                 )}
-                 {!loading && !error && !history && (
-                     <p className="text-stone-500">No se encontró historial para este usuario.</p>
-                 )}
+                {!loading && !error && !history && (
+                    <p className="text-stone-500">No se encontró historial para este usuario.</p>
+                )}
             </main>
         </div>
     );

@@ -1,5 +1,5 @@
 import ky from 'ky';
-import { Art } from '@/types/art';
+import { Art, Invoice } from '@/types/art';
 
 export const api = ky.create({
 
@@ -33,10 +33,10 @@ export const api = ky.create({
 
 export interface UserHistory {
     reservas: Art[];
-    facturas: Art[];
+    facturas: Invoice[];
 }
 
 // Historial del usuario: Obras reservadas y Facturas asociadas
 export const getUserHistory = (compradorId: number): Promise<UserHistory> => {
-    return api.get(`api/facturas/user/${compradorId}`).json();
+    return api.get(`api/invoices/user/${compradorId}`).json();
 };
