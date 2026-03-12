@@ -12,10 +12,19 @@ export default function Navbar() {
 
     useEffect(() => {
         const data = localStorage.getItem('user');
+        console.log('localStorage user data:', data);
         if (data) {
             try {
                 const parsed = JSON.parse(data);
-                setUser(parsed.user || parsed);
+                console.log('Parsed user data:', parsed);
+
+                const userObject = parsed.user || parsed;
+                console.log('Final user object:', userObject);
+
+                if (parsed.tipo === 'ADMIN') {
+                    userObject.cargo = 'ADMIN';
+                }
+                setUser(userObject);
             } catch (error) {
                 localStorage.removeItem('user');
                 console.log(error)
