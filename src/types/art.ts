@@ -29,6 +29,7 @@ export interface BaseArt {
     imagenUrl: string;
     artista: Artist;
     genero: { id: number; nombre: string };
+    compradorReserva?: Buyer;
 }
 
 export interface Painting extends BaseArt { tecnica: string; estilo: string; }
@@ -63,4 +64,15 @@ export interface Buyer extends User {
 export interface AuthResponse {
     user: User;
     tipo: 'ADMIN' | 'BUYER';
+}
+
+export interface Invoice {
+    id: number;
+    fechaFacturacion: number; // O Date, dependiendo de cómo lo maneje el backend
+    total: number;
+    obra: Art; // Detalles completos de la obra
+    comprador: Buyer; // Detalles completos del comprador
+    admin: User; // Detalles completos del administrador que facturó
+    codigoSeguridad?: string; // Opcional, podría no estar en la lista general
+    direccion?: string; // Opcional
 }

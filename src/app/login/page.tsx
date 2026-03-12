@@ -16,7 +16,7 @@ export default function LoginPage() {
         mutationFn: (credentials: any): Promise<AuthResponse> =>
             api.post('api/auth/login', { json: credentials }).json<AuthResponse>(),
         onSuccess: (data) => {
-            console.log("Datos recibidos del back:", data);
+            console.log("Datos recibidos del backend:", data);
             // Guardamos el objeto AuthResponse que devuelve tu backend
             localStorage.setItem('user', JSON.stringify(data));
 
