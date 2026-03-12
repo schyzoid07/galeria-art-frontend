@@ -44,15 +44,30 @@ export default function ArtDetailPage() {
             const buyerId = parsed?.user?.id || parsed?.id;
 
             if (!buyerId) throw new Error("No se pudo obtener el ID del comprador");
-            return api.patch(`api/arts/${id}/reservar/${buyerId}`).json<Art>()
+            return api.post(`api/arts/${id}/reservar/${buyerId}`);
         },
-        onSuccess: (updatedArt) => {
-            alert(`¡Éxito! La obra "${updatedArt.nombre}" ha sido reservada.`);
+        onSuccess: () => {
+            alert(`¡Éxito! La obra ha sido reservada.`);
             queryClient.invalidateQueries({ queryKey: ['art', id] });
+            queryClient.invalidateQueries({ queryKey: ['obras-reservadas'] });
         },
         onError: async (err: any) => {
-            const errorData = await err.response?.json().catch(() => null);
-            alert(errorData || 'Error al procesar la reserva. Inténtalo de nuevo.');
+            const errorMessage = await err.response?.text().catch(() => 'Error desconocido');
+            alert(errorMessage || 'Error al procesar la reserva. Inténtalo de nuevo.');
+        }
+    });
+
+    // Mutación para cancelar la reserva de la obra
+    const cancelReserveMutation = useMutation({
+        mutationFn: () => api.post(`api/arts/${id}/cancelar-reserva`).json<Art>(),
+        onSuccess: (updatedArt) => {
+            alert(`La reserva de la obra "${updatedArt.nombre}" ha sido cancelada.`);
+            queryClient.invalidateQueries({ queryKey: ['art', id] });
+            queryClient.invalidateQueries({ queryKey: ['obras-reservadas'] }); // Invalida también en admin
+        },
+        onError: async (err: any) => {
+            const errorMessage = await err.response?.text();
+            alert(errorMessage || 'Error al cancelar la reserva. Inténtalo de nuevo.');
         }
     });
 
@@ -195,13 +210,22 @@ export default function ArtDetailPage() {
                                     queryClient.invalidateQueries({ queryKey: ['art', id] });
                                 }}
                             />
-                        ) : art.estatus !== 'Disponible' ? (
-                            // Lógica para obra no disponible
+                        ) : art.estatus === 'Reservada' && art.compradorReserva?.id === user.id ? (
+                            // Lógica para cancelar la reserva si es del usuario actual
+                            <button
+                                onClick={() => cancelReserveMutation.mutate()}
+                                disabled={cancelReserveMutation.isPending}
+                                className="w-full py-5 bg-red-600 text-white text-xs font-bold uppercase tracking-[0.3em] hover:bg-red-700 border-2 border-red-600 transition-all duration-300 shadow-xl disabled:bg-red-400"
+                            >
+                                {cancelReserveMutation.isPending ? 'Cancelando...' : 'Cancelar Reserva'}
+                            </button>
+                        ) : art.estatus !== 'Disponible' ? ( // Obra no disponible (reservada por otro o vendida)
+
                             <button disabled className="w-full py-5 bg-stone-200 text-stone-500 text-xs font-bold uppercase tracking-[0.3em] cursor-not-allowed">
                                 Obra ya {art.estatus}
                             </button>
                         ) : (
-                            // Lógica para compra final
+                            // Lógica para reservar la obra
                             <button
                                 onClick={() => reserveMutation.mutate()}
                                 disabled={reserveMutation.isPending}

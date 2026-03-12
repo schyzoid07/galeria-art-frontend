@@ -36,6 +36,19 @@ export default function FacturacionPage() {
         onError: (e: any) => alert('Error al facturar: ' + e.message)
     });
 
+    // 3. Mutación para cancelar la reserva (desde admin)
+    const cancelReserveMutation = useMutation({
+        mutationFn: (obraId: number) => api.post(`api/arts/${obraId}/cancelar-reserva`),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['obras-reservadas'] });
+            alert('Reserva cancelada con éxito.');
+        },
+        onError: async (err: any) => {
+            const errorMessage = await err.response?.text();
+            alert('Error al cancelar la reserva: ' + (errorMessage || err.message));
+        }
+    });
+
     const handleFacturar = () => {
         const storedUser: string | null = localStorage.getItem('user');
         if (!storedUser) {
@@ -83,15 +96,28 @@ export default function FacturacionPage() {
                                     <p className="text-sm text-stone-500">Reservado por: <span className="font-medium">{obra.compradorReserva?.nombre} {obra.compradorReserva?.apellido}</span></p>
                                     <p className="text-sm text-stone-500">Precio: <span className="font-medium">${obra.precioBase.toLocaleString()}</span></p>
                                 </div>
-                                <button
-                                    onClick={() => {
-                                        setFormData({ codigoSeguridad: '' }); // Resetear al abrir
-                                        setSelectedObra(obra);
-                                    }}
-                                    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
-                                >
-                                    Emitir Factura
-                                </button>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={() => {
+                                            setFormData({ codigoSeguridad: '' }); // Resetear al abrir
+                                            setSelectedObra(obra);
+                                        }}
+                                        className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+                                    >
+                                        Emitir Factura
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (window.confirm(`¿Estás seguro de que quieres cancelar la reserva de "${obra.nombre}"?`)) {
+                                                cancelReserveMutation.mutate(obra.id);
+                                            }
+                                        }}
+                                        disabled={cancelReserveMutation.isPending && cancelReserveMutation.variables === obra.id}
+                                        className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition-colors shadow-md disabled:bg-red-300"
+                                    >
+                                        {cancelReserveMutation.isPending && cancelReserveMutation.variables === obra.id ? '...' : 'Cancelar'}
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>
