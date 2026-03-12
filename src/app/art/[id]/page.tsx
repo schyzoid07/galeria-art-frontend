@@ -177,6 +177,11 @@ export default function ArtDetailPage() {
                             <div className="w-full py-5 bg-stone-100 text-stone-600 text-center text-xs font-bold uppercase tracking-[0.2em] border border-stone-200">
                                 Vista de Administrador
                             </div>
+                        ) : !user.activo ? (
+                            // Lógica para usuario inactivo
+                            <div className="w-full py-5 bg-red-100 text-red-800 text-center text-sm font-semibold uppercase tracking-wider border border-red-200 rounded-lg">
+                                Tu cuenta está inactiva. Contacta a soporte para reactivarla.
+                            </div>
                         ) : !user.membresiaPaga ? (
                             // Lógica para Buyer sin membresía
 
