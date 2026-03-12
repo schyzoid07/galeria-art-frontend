@@ -52,7 +52,7 @@ export default function RegisterPage() {
                             required
                             type="text"
                             className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:ring-2 text-black focus:ring-slate-900 outline-none transition-all"
-                            placeholder="Ej. Miguel Ángel"
+                            placeholder="Ej. Juan Pablo"
                             onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                         />
                     </div>
