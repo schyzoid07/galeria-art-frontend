@@ -19,7 +19,7 @@ export default function CrearAdminPage() {
         nombre: '',
         apellido: '',
         email: '',
-        contraseña: '',
+        password: '',
         telefono: '',
         cargo: 'ADMIN', // Por defecto
     });
@@ -37,7 +37,7 @@ export default function CrearAdminPage() {
                 nombre: adminData.nombre,
                 apellido: adminData.apellido,
                 email: adminData.email,
-                contraseña: '', // La contraseña no se precarga por seguridad
+                password: '', // La contraseña no se precarga por seguridad
                 telefono: adminData.telefono,
                 cargo: adminData.cargo || 'ADMIN',
             });
@@ -46,7 +46,7 @@ export default function CrearAdminPage() {
 
     const mutation = useMutation<User, Error, AdminDTO>({
         mutationFn: (adminPayload: AdminDTO) => {
-            const endpoint = isEditMode ? `api/admins/${id}` : 'api/admins';
+            const endpoint = isEditMode ? `api/admins//${id}` : 'api/admins/register';
             const method = isEditMode ? 'patch' : 'post';
             return api[method](endpoint, { json: adminPayload }).json<User>();
         },
@@ -66,7 +66,7 @@ export default function CrearAdminPage() {
 
         const payload = { ...formData, login: formData.email };
 
-        if (isEditMode && !payload.contraseña) {
+        if (isEditMode && !payload.password) {
             // @ts-ignore
             delete payload.contraseña; // No enviar la contraseña si está vacía en modo edición
         }
@@ -102,7 +102,7 @@ export default function CrearAdminPage() {
 
                     <div className="md:col-span-2">
                         <label className="block text-xs font-bold text-black uppercase mb-2">Contraseña</label>
-                        <input required={!isEditMode} type="password" placeholder={isEditMode ? 'Dejar en blanco para no cambiar' : ''} value={formData.contraseña} onChange={e => handleInputChange('contraseña', e.target.value)} className="w-full p-3 bg-white text-black rounded-xl border border-stone-300" />
+                        <input required={!isEditMode} type="password" placeholder={isEditMode ? 'Dejar en blanco para no cambiar' : ''} value={formData.password} onChange={e => handleInputChange('password', e.target.value)} className="w-full p-3 bg-white text-black rounded-xl border border-stone-300" />
                     </div>
 
                     <div className="md:col-span-1">

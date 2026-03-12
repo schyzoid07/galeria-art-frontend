@@ -46,7 +46,7 @@ export interface User {
     nombre: string;
     apellido: string;
     email: string;
-    contraseña: string;
+    password: string;
     telefono: string;
     fechaRegistro: string;
     activo: boolean;
