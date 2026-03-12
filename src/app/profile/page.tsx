@@ -10,16 +10,29 @@ export default function ProfilePage() {
     const [formData, setFormData] = useState<any>({});
 
     useEffect(() => {
-        const stored = localStorage.getItem('user');
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            const userData = parsed.user || parsed;
-            setUser(userData);
-            setFormData(userData);
-            // DEBUG: Ver el estado inicial cargado desde el storage
-            console.log("DEBUG - Datos cargados en el perfil:", userData);
-        }
-    }, []);
+        // Función para leer el storage
+        const loadUserData = () => {
+            const stored = localStorage.getItem('user');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    const userData = parsed.user || parsed;
+                    setUser(userData);
+                    setFormData(userData);
+                } catch (e) {
+                    console.error("Error al parsear user:", e);
+                }
+            }
+        };
+
+        // 1. Carga inicial
+        loadUserData();
+
+        // 2. Escuchar cambios de storage (útil si navegas entre pestañas o componentes)
+        window.addEventListener('storage', loadUserData);
+
+        return () => window.removeEventListener('storage', loadUserData);
+    }, []); // Sigue siendo [] pero ahora reacciona al evento de ventana
 
     const isAdmin = user && 'cargo' in user;
 
@@ -43,6 +56,8 @@ export default function ProfilePage() {
 
     if (!user) return <div className="p-40 text-center">Cargando perfil...</div>;
 
+
+    //Helper para reducir cantidad de codigo en el return de inputs
     const renderInput = (label: string, field: string, type: string = "text") => (
         <div>
             <label className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1">{label}</label>
@@ -52,6 +67,18 @@ export default function ProfilePage() {
                 value={formData[field] || ''}
                 onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
                 className="w-full p-3 bg-white rounded-xl border border-stone-300 text-slate-950 font-medium focus:ring-2 focus:ring-amber-600 outline-none transition-all disabled:bg-stone-50 disabled:border-stone-200"
+            />
+        </div>
+    );
+
+    const renderReadOnly = (label: string, field: string) => (
+        <div>
+            <label className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1">{label}</label>
+            <input
+
+                disabled={true} // Siempre deshabilitado
+                value={formData[field] || '***'}
+                className="w-full p-3 bg-stone-100 rounded-xl border border-stone-200 text-slate-500 font-medium cursor-not-allowed"
             />
         </div>
     );
@@ -78,12 +105,17 @@ export default function ProfilePage() {
                     </div>
                     {renderInput("Email", "email", "email")}
 
+
                     {isAdmin ? (
                         renderInput("Cargo", "cargo")
                     ) : (
                         <>
                             {renderInput("Dirección de Envío", "direccionEnvio")}
-                            {renderInput("Tarjeta (Máscara)", "datosTarjetaMask")}
+                            <div className="grid grid-cols-2 gap-4">
+                                {renderInput("Tarjeta (Máscara)", "datosTarjetaMask")}
+                                {/* AQUÍ USAMOS EL NUEVO COMPONENTE QUE ES SOLO DE LECTURA */}
+                                {renderReadOnly("Código de Seguridad", "codigoSeguridad")}
+                            </div>
                         </>
                     )}
 

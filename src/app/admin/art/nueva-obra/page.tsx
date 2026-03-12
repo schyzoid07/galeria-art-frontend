@@ -70,6 +70,9 @@ export default function NuevaObraPage() {
     useEffect(() => {
         if (obraEdicion) {
             const data = obraEdicion as any;
+            const anioExtraido = typeof data.fechaCreacion === 'string'
+                ? parseInt(data.fechaCreacion.substring(0, 4))
+                : data.fechaCreacion;
 
             setFormData(prev => ({
                 ...prev,
@@ -77,7 +80,7 @@ export default function NuevaObraPage() {
                 precioBase: data.precioBase || 0,
                 estatus: data.estatus || 'Disponible',
                 imagenUrl: data.imagenUrl || '',
-                fechaCreacion: data.fechaCreacion || 0,
+                fechaCreacion: anioExtraido || new Date().getFullYear() || 0,
                 artistaId: data.artista?.id || 0,
                 generoId: data.genero?.id || 0,
                 // Campos específicos 

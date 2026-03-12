@@ -185,6 +185,9 @@ export default function ArtDetailPage() {
                                 onSuccess={(updated) => {
                                     localStorage.setItem('user', JSON.stringify(updated));
                                     setUser(updated);
+                                    alert("¡Pago exitoso! Tu membresía ha sido activada y tu código de seguridad generado.");
+                                    console.log("DEBUG - Datos recibidos tras pago:", updated);
+                                    queryClient.invalidateQueries({ queryKey: ['art', id] });
                                 }}
                             />
                         ) : art.estatus !== 'Disponible' ? (

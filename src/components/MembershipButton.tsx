@@ -10,12 +10,11 @@ interface Props {
 
 export function MembershipButton({ user, onSuccess }: Props) {
     const mutation = useMutation({
-        mutationFn: () => api.post(`api/buyers/${user.id}/pay-membership`, {
+        mutationFn: () => api.post(`api/buyers/${user.id}/pay-membership-v2`, {
             json: { metodoPago: "Tarjeta de Crédito" }
-        }).text(),
-        onSuccess: () => {
+        }).json<Buyer>(),
 
-            const updatedUser = { ...user, membresiaPaga: true };
+        onSuccess: (updatedUser) => {
             onSuccess(updatedUser);
         }
     });
